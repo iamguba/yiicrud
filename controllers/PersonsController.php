@@ -35,6 +35,7 @@ class PersonsController extends Controller
      */
     public function actionIndex()
     {
+        // get list sorted by date from newest to oldest
         $persons = Person::find()
                 ->orderBy('created_at DESC')
                 ->all();
@@ -54,15 +55,20 @@ class PersonsController extends Controller
     {
         $model = new Person();
 
+
+        // in case we have POST request
+        // we try to load post data (including image)
+        // validate it
+        // on success, save and redirect home
         if ($model->load(Yii::$app->request->post()) &&
             $model->loadOrRemovePicImage() &&
             $model->validate()) {
             $model->save();
-
             return $this->redirect('/persons');
         }
 
-
+        // otherwise, pass model object in view
+        // in case of errors, it will contain them
         return $this->render('edit', [
             'model' => $model,
         ]);
@@ -78,11 +84,12 @@ class PersonsController extends Controller
     {
         $model = Person::findOne($id);
 
+        // if not found show 404
         if (!$model) {
             throw new \yii\web\NotFoundHttpException();
         }
 
-
+        // same principle as actionNew
         if ($model->load(Yii::$app->request->post()) &&
             $model->loadOrRemovePicImage() &&
             $model->validate()) {
@@ -106,6 +113,7 @@ class PersonsController extends Controller
     {
         $model = Person::findOne($id);
 
+        // if not found show 404
         if (!$model) {
             throw new \yii\web\NotFoundHttpException();
         }
@@ -125,7 +133,18 @@ class PersonsController extends Controller
      */
     public function actionDevices($platform_id)
     {
+        // actually, i don't know exactly
+        // how to write this according to yii concepts
+
+        // this is ajax endpoint returning list of devices
+        // depending of parent platform
+        // so i use ActiveForm
+        // to get most native html for form
+        
         $form = ActiveForm::begin();
+
+        // oops usage of magic method __toString() directly
+        // i googled but i can't find how to get options of dropdown directly
 
         $dropdown = $form->field(new Person, 'device_id')->dropdownList(
             Device::find()
@@ -134,6 +153,9 @@ class PersonsController extends Controller
             ->select(['title', 'id'])->indexBy('id')->column(),
             ['prompt'=>'Select Device']
         )->__toString();
+
+        // so i get pure string representation
+        // and filter only <option>'s
 
         $dropdownRows = explode("\n", $dropdown);
         $dropdownRows = array_filter($dropdownRows, function($row) {

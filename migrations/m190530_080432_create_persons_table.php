@@ -79,6 +79,16 @@ class m190530_080432_create_persons_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey(
+            $name = 'fk-persons-platform_id',
+            $table = '{{%persons}}'
+        );
+
+        $this->dropForeignKey(
+            $name = 'fk-persons-device_id',
+            $table = '{{%persons}}'
+        );
+        
         $this->dropTable('{{%persons}}');
     }
 }

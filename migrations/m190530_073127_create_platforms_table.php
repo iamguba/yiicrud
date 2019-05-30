@@ -17,7 +17,7 @@ class m190530_073127_create_platforms_table extends Migration
             'title' => $this->string(),
         ]);
 
-
+        // base seeding
         $this->batchInsert('{{%platforms}}', ['title'], [
             ['iOS'],
             [ 'Android'],

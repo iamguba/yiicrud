@@ -20,6 +20,7 @@ class m190530_074412_create_devices_table extends Migration
         ]);
 
 
+        // key with platform
         $this->addForeignKey(
             $name = 'fk-devices-platform_id',
             $table = '{{%devices}}',
@@ -46,7 +47,7 @@ class m190530_074412_create_devices_table extends Migration
             if ($platform['title'] == 'Android') $androidId = $platform['id'];
         }
 
-
+        // basic seeding
         $this->batchInsert('{{%devices}}', ['platform_id', 'title', 'sort'], [
             [$iosId, 'iPhone SE', 1],
             [$iosId, 'iPhone 7', 2],
